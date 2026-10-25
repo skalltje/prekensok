@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Læstadiansk prekensøk</title>
+<style>
+:root{
+  --bg:#f7f4ee; --card:#fffdf9; --ink:#2a2622; --muted:#6f665c; --line:#e3dccf;
+  --accent:#7a3b1d; --accent-soft:#f3e6dc; --hit:#fff0b3; --none:#a39a8f;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1b1916; --card:#25221e; --ink:#ece6dc; --muted:#a59c90; --line:#3a352f;
+    --accent:#e0a074; --accent-soft:#3a2a20; --hit:#5a4a10; --none:#7c746a;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1b1916; --card:#25221e; --ink:#ece6dc; --muted:#a59c90; --line:#3a352f;
+  --accent:#e0a074; --accent-soft:#3a2a20; --hit:#5a4a10; --none:#7c746a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Georgia,"Iowan Old Style",serif}
+.wrap{max-width:860px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:1.9rem;margin:0 0 4px;font-weight:normal}
+.sub{color:var(--muted);margin:0 0 24px;font-size:.95rem}
+.search{display:flex;gap:8px;flex-wrap:wrap}
+.search input{flex:1 1 260px;font:inherit;font-size:1.1rem;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+.search input:focus,.search select:focus{outline:2px solid var(--accent);outline-offset:1px}
+.search select{font:inherit;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+.hint{color:var(--muted);font-size:.85rem;margin:8px 0 20px}
+.hint button{font:inherit;background:none;border:0;color:var(--accent);cursor:pointer;padding:0;text-decoration:underline}
+.count{color:var(--muted);font-size:.9rem;margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:14px}
+.head{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.num{font-size:1.5rem;color:var(--accent);font-weight:bold;min-width:3.2rem}
+.sun{font-size:1.15rem}
+.texts{color:var(--muted);font-size:.92rem;margin-top:2px}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:.95rem}
+th,td{text-align:left;padding:6px 8px;border-top:1px solid var(--line);vertical-align:top}
+th{font-weight:normal;color:var(--muted);width:40%}
+td.ref{font-variant-numeric:tabular-nums}
+.none{color:var(--none)}
+.det{display:block;color:var(--muted);font-size:.85rem}
+mark{background:var(--hit);color:inherit;border-radius:3px;padding:0 2px}
+.abbr{font-size:.8rem;color:var(--muted);font-family:ui-monospace,Menlo,monospace}
+details.about{margin-top:40px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px}
+details.about summary{cursor:pointer;color:var(--accent)}
+details.about dl{margin:12px 0 0}
+details.about dt{font-weight:bold;margin-top:10px}
+details.about dd{margin:2px 0 0;color:var(--muted)}
+a{color:var(--accent)}
+.empty{color:var(--muted);padding:20px 0}
+@media (max-width:560px){th{width:45%} .num{font-size:1.3rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Læstadiansk prekensøk</h1>
+  <p class="sub">Finn hvor en preken fra <em>Postille I</em> står i de andre læstadianske prekensamlingene.</p>
+
+  <div class="search">
+    <input id="q" type="search" autocomplete="off" placeholder="Søk: nummer, søndag eller bibeltekst …" autofocus>
+    <select id="f" aria-label="Søk i">
+      <option value="all">Søk i alt</option>
+      <option value="pi">Postille I nr.</option>
+      <option value="saa">Saa-nummer</option>
+      <option value="sw">SW-nummer</option>
+      <option value="rrs">RRS-nummer</option>
+      <option value="eng">Engelsk postille</option>
+      <option value="txt">Søndag / bibeltekst</option>
+    </select>
+  </div>
+  <p class="hint">Eksempler:
+    <button data-q="12">12</button> ·
+    <button data-q="påskedag">påskedag</button> ·
+    <button data-q="Joh 3,16">Joh 3,16</button> ·
+    <button data-q="57/NP">57/NP</button> ·
+    <button data-q="Brune">Brune</button>
+  </p>
+
+  <div id="count" class="count"></div>
+  <div id="out"></div>
+
+  <details class="about">
+    <summary>Om samlingene og forkortelsene</summary>
+    <dl>
+      <dt>PI – Postille I</dt><dd>Norsk utgave fra Biblioteca Laestadiana (2026). Nummereringen her er utgangspunktet for kryssreferansene.</dd>
+      <dt>Saa – Saarnat og Samlade Predikningar</dt><dd>Finsk <em>Saarnat I–III</em> (1996–2000, 466 prekener) og svensk <em>Samlade predikningar I–VI</em> (Biblioteca Laestadiana, 2006–2023).</dd>
+      <dt>SW – Postilla, S. Wettainen</dt><dd>Svensk postille ved Sam Wettainen (1985, 151 prekener).</dd>
+      <dt>RRS – Prekensamling I–III, R. Rustholkarhu-Sund</dt><dd>Norsk, 1984–1993, 249 prekener i tre bind. Bind, søndag og tekster vises fra samleregisteret.</dd>
+      <dt>(Br) og (Bø) – Brune og Børresen</dt><dd>Prekenen finnes ikke i RRS, men i Ananias Brunes <em>Kirkepostille</em> (1901/1933) og/eller Andreas Børresens <em>Tredje Postille</em> (1948).</dd>
+      <dt>Eng – New, Third, Fourth og Fifth Postilla</dt><dd>Amerikanske utgaver. «57/NP» betyr preken 57 i <em>New Postilla</em>; III = <em>Third Postilla</em>, IV = <em>Fourth Postilla</em>, V = <em>Fifth Postilla</em>.</dd>
+      <dt>*) – Fra Postille A.K. Panula</dt><dd>Finsk postille ved A.K. Panula (1964, 364 prekener).</dd>
+    </dl>
+    <p class="det" style="margin-top:14px">Kilde: «Kryssreferanser til andre postiller», Postille I s. 796, og
+      <a href="https://no.wikipedia.org/wiki/L%C3%A6stadianske_prekensamlinger" target="_blank" rel="noopener">Wikipedia: Læstadianske prekensamlinger</a>.</p>
+  </details>
+</div>
+
+<script>
+const DATA = {"x":[{"n":1,"saa":"2","sw":"1A","rrs":"(Br)","eng":"1/NP","p":["1 søn i advent","Rom 13,11-12","Matt 21,1-9"]},{"n":2,"saa":"4","sw":"1B","rrs":"176","eng":"1/III","p":["1 søn i advent","Matt 21,5","Matt 21,1-9"]},{"n":3,"saa":"8","sw":"2B","rrs":"1","eng":"24/V","p":["2 søn i advent","Luk 21,25","Luk 21,25-36"]},{"n":4,"saa":"9","sw":"2A","rrs":"2","eng":"2/NP","p":["2 søn i advent","Luk 21,28","Luk 21,25-28"]},{"n":5,"saa":"12","sw":"3B","rrs":"84","eng":"4/NP","p":["3 søn i advent","Jes 42,6-7","Matt 11,2-6"]},{"n":6,"saa":"15","sw":"3A","rrs":"3","eng":"3/III","p":["3 søn i advent","Jes 42,6-7","Matt 11,2-6"]},{"n":7,"saa":"19","sw":"4B","rrs":"85","eng":"5/III","p":["4 søn i advent","Matt 3,13-14","Joh 1,19-28"]},{"n":8,"saa":"20","sw":"4A","rrs":"(Bø)","eng":"4/III","p":["4 søn i advent","1. Mos 32,10","Joh 1,19-28"]},{"n":9,"saa":"26","sw":"5A","rrs":"177","eng":"81/III","p":["Juldagen","","Joh 1,1-14"]},{"n":10,"saa":"28","sw":"5B","rrs":"5","eng":"6/III","p":["Juldagen","Jes 53,1-2","Luk 2,1-20"]},{"n":11,"saa":"29","sw":"5C","rrs":"86","eng":"7/III","p":["Første juledag","Joh 1,1-14","Joh 1,1-14"]},{"n":12,"saa":"34","sw":"6B","rrs":"7","eng":"26/V","p":["Andre juledag","5. Mos 32,10-12","Matt 23,34-39"]},{"n":13,"saa":"35","sw":"6A","rrs":"178","eng":"8/NP","p":["Andre juledag","Matt 5,11-12","Matt 23,34-39"]},{"n":14,"saa":"37","sw":"7A","rrs":"8","eng":"10/III","p":["Søndag etter jul","2. Tess 2,11-12","Luk 2,33-40"]},{"n":15,"saa":"38","sw":"7B","rrs":"(Br)","eng":"9/NP","p":["Søndag etter jul","1. Mos 4,1","Luk 2,33-40"]},{"n":16,"saa":"P34*","sw":"8B","rrs":"-","eng":"11/III","p":["Nyttårsdagen","Salme 77,6-10","Luk 2,2"]},{"n":17,"saa":"41","sw":"8A","rrs":"179","eng":"-","p":["Nyttårsdagen","Apgj 4,12","Luk 2,2"]},{"n":18,"saa":"42","sw":"9B","rrs":"181","eng":"11/NP","p":["Søndag etter nyttår","Matt 3,12","Matt 3,13-17"]},{"n":19,"saa":"45","sw":"9A","rrs":"180","eng":"27/V","p":["Søndag etter nyttår","2. Kong 5,10-12","Matt 3,13-17"]},{"n":20,"saa":"46","sw":"10A","rrs":"9","eng":"-","p":["Hellig Tre Kongers dag","4. Mos 24,17","Matt 2,1-12"]},{"n":21,"saa":"47","sw":"10B","rrs":"87","eng":"12/NP","p":null},{"n":22,"saa":"48","sw":"11B","rrs":"(Br)","eng":"13/NP","p":["1. søndag etter Hellig Tre Kongers dag","Høys 3,1-2","Luk 2,42-52"]},{"n":23,"saa":"49","sw":"11A","rrs":"88","eng":"-","p":["1. søndag etter Hellig Tre Kongers dag","Tob 4,6","Luk 2,42-52"]},{"n":24,"saa":"50","sw":"12A","rrs":"182","eng":"15/III","p":["2. søndag etter Hellig Tre Kongers dag","Jes 25,6","Joh 2,1-11"]},{"n":25,"saa":"53","sw":"-","rrs":"89","eng":"14/NP","p":["2. søndag etter Hellig Tre Kongers dag","Joh 2,2","Joh 2,1-11"]},{"n":26,"saa":"55","sw":"-","rrs":"10","eng":"4/IV","p":["3. søndag etter Hellig Tre Kongers dag","Jes 55,5","Matt 8,5-13"]},{"n":27,"saa":"56","sw":"13A","rrs":"90","eng":"-","p":["3. søndag etter Hellig Tre Kongers dag","Matt 8,9-10","Matt 8,5-13"]},{"n":28,"saa":"57","sw":"14B","rrs":"184/-","eng":"16/NP","p":["4. søndag etter Hellig Tre Kongers dag","Salme 42,8","Matt 8,23-27"]},{"n":29,"saa":"58","sw":"14A","rrs":"183","eng":"29/V","p":["4. søndag etter Hellig Tre Kongers dag","Job 38,11","Matt 8,23-27"]},{"n":30,"saa":"61","sw":"15B","rrs":"186","eng":"18/III","p":["5. søndag etter Hellig Tre Kongers dag","1. Pet 1,23","Matt 13,24-30"]},{"n":31,"saa":"62","sw":"15A","rrs":"185","eng":"17/NP","p":["5. søndag etter Hellig Tre Kongers dag","Luk 10,2","Matt 13,24-30"]},{"n":32,"saa":"63","sw":"16B","rrs":"187","eng":"97/III","p":["Septuagesima","Jes 5,4","Matt 20,1-16"]},{"n":33,"saa":"64","sw":"16A","rrs":"93","eng":"-","p":["Septuagesima","Luk 13,6-9","Matt 20,1-16"]},{"n":34,"saa":"67","sw":"17B","rrs":"(Bø)","eng":"20/III","p":["Seksagesima","1. Mos 3,17","Luk 8,4-15"]},{"n":35,"saa":"68","sw":"17A","rrs":"94","eng":"30/V","p":["Seksagesima","Jes 53,1","Luk 8,4-15"]},{"n":36,"saa":"69","sw":"18B","rrs":"(Bø)","eng":"-","p":["Fastelavnssøndag","Joh 9,39","Luk 18,31-43"]},{"n":37,"saa":"70","sw":"18A","rrs":"12","eng":"20/NP","p":["Fastelavnssøndag","1. Kor 2,14; 2. Kor 4,3","Luk 18,31-43"]},{"n":38,"saa":"72","sw":"-","rrs":"13","eng":"31/V","p":["Første søndag i faste","1. Pet 5,8","Matt 4,1-11"]},{"n":39,"saa":"73","sw":"19A","rrs":"(Br)","eng":"22/NP","p":["Første søndag i faste","Syr 2,1","Matt 4,1-11"]},{"n":40,"saa":"74","sw":"20A","rrs":"189","eng":"23/III","p":["Andre søndag i faste","Rom 10,4","Matt 15,21-28"]},{"n":41,"saa":"75","sw":"20B","rrs":"95","eng":"23/NP","p":["Andre søndag i faste","Apgj 20,25-27","Matt 15,21-28"]},{"n":42,"saa":"78","sw":"21A","rrs":"96","eng":"25/NP","p":["Tredje søndag i faste","1. Sam 17-18","Luk 11,14-28"]},{"n":43,"saa":"79","sw":"21B","rrs":"14","eng":"99/III","p":["Tredje søndag i faste","Hebr 6,4-6","Luk 11,14-28"]},{"n":44,"saa":"82","sw":"22A","rrs":"191","eng":"-","p":["Midtfaste","1. Sam 8,5","Joh 6,1-15"]},{"n":45,"saa":"84","sw":"22B","rrs":"15","eng":"27/NP","p":["Midtfaste","Joh 6,12","Joh 6,1-15"]},{"n":46,"saa":"51","sw":"12B","rrs":"-","eng":"-","p":["Femte søndag i faste","Jes 55,1","Joh 2,1-11"]},{"n":47,"saa":"311","sw":"23B","rrs":"228","eng":"88/NP","p":["Femte søndag i faste","Rom 6,4","Joh 2,1-11"]},{"n":48,"saa":"90","sw":"24B","rrs":"17","eng":"29/NP","p":["Palmesøndag","Luk 22,15-16","1. Kor 11,23-29"]},{"n":49,"saa":"92","sw":"24A","rrs":"193","eng":"27/III","p":["Palmesøndag","Joh 6,54","Joh 6,54"]},{"n":50,"saa":"97B","sw":"25A","rrs":"101","eng":"31/NP","p":["Langfredag","1. Mos 42,38","Luk 23,32-43"]},{"n":51,"saa":"98","sw":"25B","rrs":"194","eng":"28/III","p":["Langfredag","Joh 19,38-42","Joh 19,38-42"]},{"n":52,"saa":"104","sw":"26A","rrs":"195","eng":"33/V","p":["Første påskedag","Matt 27,63-64","Mark 16,1-11"]},{"n":53,"saa":"105","sw":"26B","rrs":"103","eng":"29/III","p":["Første påskedag","Mark 16,1-11","Mark 16,1-11"]},{"n":54,"saa":"107","sw":"26C","rrs":"104","eng":"30/III","p":["Første påskedag","1. Kor 5,6-8","Mark 16,1-11"]},{"n":55,"saa":"109","sw":"27A","rrs":"105","eng":"33/NP","p":["Andre påskedag","Jes 42,1-3","Luk 24,13-35"]},{"n":56,"saa":"111","sw":"27B","rrs":"(Br, Bø)","eng":"31/III","p":["Andre påskedag","Luk 24,32","Luk 24,13-35"]},{"n":57,"saa":"112","sw":"28A","rrs":"20","eng":"11/IV","p":["Første søndag etter påske","1. Tim 1,9-10","Joh 20,19-31"]},{"n":58,"saa":"114","sw":"-","rrs":"(Br)","eng":"-","p":["Første søndag etter påske","2. Kong 6,25-33","Joh 20,19-31"]},{"n":59,"saa":"115","sw":"29A","rrs":"(Br)","eng":"35/NP","p":["Andre søndag etter påske","Esek 34,17-20","Joh 10,11-16"]},{"n":60,"saa":"117","sw":"29B","rrs":"198","eng":"36/NP","p":["Andre søndag etter påske","2. Sam 24,17","Joh 10,11-16"]},{"n":61,"saa":"120","sw":"30B","rrs":"21","eng":"-","p":["Tredje søndag etter påske","Joh 16,21","Joh 16,16-22"]},{"n":62,"saa":"121","sw":"30A","rrs":"-","eng":"34/III","p":["Tredje søndag etter påske","Joh 16,20","Joh 16,16-22"]},{"n":63,"saa":"122","sw":"-","rrs":"106","eng":"34/V","p":["Fjerde søndag etter påske","Jer 2,19","Joh 16,5-14"]},{"n":64,"saa":"123","sw":"31A","rrs":"-","eng":"22/V","p":["Fjerde søndag etter påske","Hos 6,1","Joh 16,5-14"]},{"n":65,"saa":"124","sw":"32A","rrs":"107","eng":"36/III","p":["Femte søndag etter påske","Jak 4,3","Joh 16,23-33"]},{"n":66,"saa":"125","sw":"-","rrs":"200","eng":"-","p":["Femte søndag etter påske","Syr 34,29","Joh 16,23-33"]},{"n":67,"saa":"128","sw":"33A","rrs":"23","eng":"13/IV","p":["Kristi Himmelfartsdag","1. Kor 15,19","Mark 16,14-20"]},{"n":68,"saa":"129","sw":"-","rrs":"22","eng":"12/IV","p":["Kristi Himmelfartsdag","Salme 110,1","Mark 16,14-20"]},{"n":69,"saa":"131","sw":"34A","rrs":"108","eng":"38/III","p":["Sjette søndag etter påske","1. Joh 3,13-14, 12","Joh 15,26-16,4"]},{"n":70,"saa":"132","sw":"34B","rrs":"24","eng":"-","p":["Sjette søndag etter påske","Matt 5,11-12","Joh 15,26-16,4"]},{"n":71,"saa":"149","sw":"35B","rrs":"-","eng":"25/IV","p":["Første pinsedag","Apg 2,2-13","Joh 3,16-21"]},{"n":72,"saa":"151","sw":"35A","rrs":"202","eng":"39/III","p":["Første pinsedag","Apg 2,2-13","Joh 3,16-21"]},{"n":73,"saa":"152","sw":"36B","rrs":"203","eng":"40/III","p":["Første pinsedag","Apg 2,2-13","Joh 3,16-21"]},{"n":74,"saa":"153","sw":"-","rrs":"110","eng":"26/IV","p":["Andre pinsedag","1. Mos 6,5-6","Joh 3,16-21"]},{"n":75,"saa":"155","sw":"36A","rrs":"109","eng":"35/V","p":["Andre pinsedag","Joh 3,17","Joh 3,16-21"]},{"n":76,"saa":"157","sw":"37A","rrs":"111","eng":"36/V","p":["Trefoldighetssøndag","Joh 3,11","Joh 3,1-13"]},{"n":77,"saa":"158","sw":"37B","rrs":"204","eng":"38/V","p":["Trefoldighetssøndag","Joh 3,7-8","Joh 3,1-13"]},{"n":78,"saa":"159","sw":"38","rrs":"205","eng":"37/V","p":["Første søndag etter trefoldighet","Matt 5,3","Luk 16,19-31"]},{"n":79,"saa":"160","sw":"-","rrs":"26","eng":"46/NP","p":["Første søndag etter trefoldighet","Joh 14,2","Luk 16,19-31"]},{"n":80,"saa":"163","sw":"39","rrs":"27","eng":"38/V","p":["Andre søndag etter trefoldighet","Luk 14,19","Luk 14,16-24"]},{"n":81,"saa":"164","sw":"-","rrs":"112","eng":"47/NP","p":["Andre søndag etter trefoldighet","Luk 15,21-24","Luk 14,16-24"]},{"n":82,"saa":"167","sw":"40","rrs":"114","eng":"49/NP","p":["Tredje søndag etter trefoldighet","Esek 34,12","Luk 15,1-10"]},{"n":83,"saa":"168","sw":"-","rrs":"29","eng":"27/IV","p":["Tredje søndag etter trefoldighet","Esek 34,15-16","Luk 15,1-10"]},{"n":84,"saa":"170","sw":"-","rrs":"(Bø)","eng":"45/III","p":["Fjerde søndag etter trefoldighet","1. Kor 6,2","Luk 6,36-42"]},{"n":85,"saa":"173","sw":"41","rrs":"117","eng":"39/V","p":["Fjerde søndag etter trefoldighet","Luk 6,37-38","Luk 6,36-42"]},{"n":86,"saa":"174","sw":"-","rrs":"(Br)","eng":"52/NP","p":["Femte søndag etter trefoldighet","Matt 13,47-48","Luk 5,1-11"]},{"n":87,"saa":"177","sw":"42","rrs":"30","eng":"46/III","p":["Femte søndag etter trefoldighet","Joh 21,1-11","Luk 5,1-11"]},{"n":88,"saa":"179","sw":"-","rrs":"-","eng":"29/IV","p":["Sjette søndag etter trefoldighet","2. Kor 4,3-4","Matt 5,20-26"]},{"n":89,"saa":"180","sw":"43","rrs":"119","eng":"40/V","p":["Sjette søndag etter trefoldighet","Matt 5,20","Matt 5,20-26"]},{"n":90,"saa":"181","sw":"44","rrs":"(Bø)","eng":"48/III","p":["Sjuende søndag etter trefoldighet","2. Pet 1,16","Mark 8,1-9"]},{"n":91,"saa":"182","sw":"33B","rrs":"32","eng":"54/NP","p":["Sjuende søndag etter trefoldighet","Matt 19,27-28","Mark 8,1-9"]},{"n":92,"saa":"184","sw":"-","rrs":"-","eng":"49/III","p":["Åttende søndag etter trefoldighet","Luk 23,31","Matt 7,15-21"]},{"n":93,"saa":"185","sw":"-","rrs":"121","eng":"-","p":["Åttende søndag etter trefoldighet","Luk 13,6-9","Matt 7,15-21"]},{"n":94,"saa":"186","sw":"46","rrs":"33","eng":"30/IV","p":["Niende søndag etter trefoldighet","Matt 25,29","Luk 16,1-9"]},{"n":95,"saa":"187","sw":"-","rrs":"122","eng":"-","p":["Niende søndag etter trefoldighet","1. Kor 4,1-2","Luk 16,1-9"]},{"n":96,"saa":"191","sw":"47","rrs":"123","eng":"57/NP","p":["Tiende søndag etter trefoldighet","2. Sam 18,33","Luk 19,41-48"]},{"n":97,"saa":"192","sw":"-","rrs":"124","eng":"31/IV","p":["Tiende søndag etter trefoldighet","1. Mos 42,38","Luk 19,41-48"]},{"n":98,"saa":"193","sw":"48","rrs":"206","eng":"52/III","p":["Ellevte søndag etter trefoldighet","Jer 4,18-19","Luk 18,9-14"]},{"n":99,"saa":"197","sw":"-","rrs":"34","eng":"53/III","p":["Ellevte søndag etter trefoldighet","Salme 51,3","Luk 18,9-14"]},{"n":100,"saa":"198","sw":"-","rrs":"-","eng":"41/V","p":["Tolvte søndag etter trefoldighet","2. Mos 4,10-11","Mark 7,31-37"]},{"n":101,"saa":"201","sw":"-","rrs":"35","eng":"-","p":["Tolvte søndag etter trefoldighet","2. Mos 4,11","Mark 7,31-37"]},{"n":102,"saa":"203","sw":"50","rrs":"207","eng":"60/NP","p":["Trettende søndag etter trefoldighet","Ordspr 14,31","Luk 10,23-37"]},{"n":103,"saa":"204","sw":"-","rrs":"36","eng":"33/IV","p":["Trettende søndag etter trefoldighet","Amos 5,10","Luk 10,23-37"]},{"n":104,"saa":"239","sw":"-","rrs":"-","eng":"-","p":["Fjortende søndag etter trefoldighet","Tob 12,7","Luk 17,11-19"]},{"n":105,"saa":"206","sw":"-","rrs":"126","eng":"-","p":["Fjortende søndag etter trefoldighet","Jer 2,27","Luk 17,11-19"]},{"n":106,"saa":"208","sw":"-","rrs":"208","eng":"-","p":["Femtende søndag etter trefoldighet","Matt 6,33","Matt 6,24-34"]},{"n":107,"saa":"209","sw":"-","rrs":"128","eng":"57/III","p":["Femtende søndag etter trefoldighet","Joh 17,9","Matt 6,24-34"]},{"n":108,"saa":"211","sw":"53","rrs":"209","eng":"-","p":["Sekstende søndag etter trefoldighet","Rom 5,12","Luk 7,11-17"]},{"n":109,"saa":"214","sw":"-","rrs":"129","eng":"58/III","p":["Sekstende søndag etter trefoldighet","Luk 7,11-17","Luk 7,11-17"]},{"n":110,"saa":"216","sw":"-","rrs":"(Br)","eng":"66/NP","p":["Syttende søndag etter trefoldighet","Joh 8,53","Luk 14,1-11"]},{"n":111,"saa":"219","sw":"54","rrs":"131","eng":"67/NP","p":["Syttende søndag etter trefoldighet","Luk 14,10","Luk 14,1-11"]},{"n":112,"saa":"221","sw":"55","rrs":"210","eng":"60/III","p":["Attende søndag etter trefoldighet","5. Mos 6,5","Matt 22,34-46"]},{"n":113,"saa":"166","sw":"-","rrs":"28","eng":"-","p":["Attende søndag etter trefoldighet","Esek 34,17","Matt 22,34-46"]},{"n":114,"saa":"222","sw":"-","rrs":"134","eng":"61/III","p":["Nittende søndag etter trefoldighet","Hos 13,13-14","Matt 9,1-8"]},{"n":115,"saa":"223","sw":"56","rrs":"133","eng":"42/V","p":["Nittende søndag etter trefoldighet","Matt 16,19","Matt 9,1-8"]},{"n":116,"saa":"225","sw":"-","rrs":"211","eng":"62/III","p":["Tjuende søndag etter trefoldighet","1. Mos 45,22","Matt 22,1-14"]},{"n":117,"saa":"226","sw":"57","rrs":"135","eng":"70/NP","p":["Tjuende søndag etter trefoldighet","1. Mos 45,22","Matt 22,1-14"]},{"n":118,"saa":"215","sw":"-","rrs":"(Bø)","eng":"59/III","p":["Tjueførste søndag etter trefoldighet","Syr 21,1-4","Joh 4,46-53"]},{"n":119,"saa":"231","sw":"58","rrs":"37","eng":"71/NP","p":["Tjueførste søndag etter trefoldighet","1. Joh 3,18-21","Joh 4,46-53"]},{"n":120,"saa":"233","sw":"-","rrs":"137","eng":"43/V","p":["Tjueandre søndag etter trefoldighet","Rom 10,3","Matt 18,23-35"]},{"n":121,"saa":"236","sw":"59","rrs":"138","eng":"72/NP","p":["Tjueandre søndag etter trefoldighet","Esek 3,20","Matt 18,23-35"]},{"n":122,"saa":"228","sw":"-","rrs":"-","eng":"-","p":["Tjuetredje søndag etter trefoldighet","1. Mos 3,21","Matt 22,1-14"]},{"n":123,"saa":"237","sw":"60","rrs":"139","eng":"-","p":["Tjuetredje søndag etter trefoldighet","Rom 13,7","Matt 22,1-14"]},{"n":124,"saa":"240","sw":"-","rrs":"(Br)","eng":"66/III","p":["Tjuefjerde søndag etter trefoldighet","Sal 107,2-8","Matt 9,18-26"]},{"n":125,"saa":"241","sw":"-","rrs":"140","eng":"38/IV","p":["Tjuefjerde søndag etter trefoldighet","Ingen spesifikk referanse","Matt 9,18-26"]},{"n":126,"saa":"242","sw":"62","rrs":"(Br)","eng":"75/NP","p":["Tjuefemte søndag etter trefoldighet","Matt 24,28","Matt 24,28"]},{"n":127,"saa":"259","sw":"-","rrs":"45","eng":"-","p":null},{"n":128,"saa":"245","sw":"63","rrs":"(Br)","eng":"45/V","p":["Søndag før domssøndagen","Åp 12,1-2","Matt 25,1-13"]},{"n":129,"saa":"65","sw":"-","rrs":"188","eng":"18/NP","p":["Søndag før domssøndagen","3. Mos 24,1-2","Matt 25,1-13"]},{"n":130,"saa":"246","sw":"-","rrs":"41","eng":"39/IV","p":["Domssøndagen","Åp 20,12","Matt 25,31-46"]},{"n":131,"saa":"250","sw":"64","rrs":"143","eng":"77/NP","p":["Domssøndagen","Åp 14,13","Matt 25,31-46"]},{"n":132,"saa":"136","sw":"65","rrs":"42","eng":"-","p":["Kyndelsmessedagen","Job 19,25-26","Luk 2,22-32"]},{"n":133,"saa":"137","sw":"-","rrs":"213","eng":"70/III","p":["Kyndelsmessedagen","Dan 9,26-27","Luk 2,22-32"]},{"n":134,"saa":"139","sw":"-","rrs":"-","eng":"41/IV","p":["Maria budskapsdag","1. Mos 3,15","Luk 1,26-38"]},{"n":135,"saa":"143","sw":"66","rrs":"214","eng":"71/III","p":["Maria budskapsdag","Salme 2,7","Luk 1,26-38"]},{"n":136,"saa":"254","sw":"67","rrs":"215","eng":"82/NP","p":["Sankthansdagen - Døperen Johannes' dag","Jes 40,6-8","Luk 1,57-80"]},{"n":137,"saa":"255","sw":"-","rrs":"44","eng":"72/III","p":["Sankthansdagen - Døperen Johannes' dag","Matt 11,11","Luk 1,57-80"]},{"n":138,"saa":"258","sw":"-","rrs":"148","eng":"84/NP","p":["Den Hellige Mikaels dag","Åp 12,7-9","Matt 18,1-10"]},{"n":139,"saa":"260","sw":"-","rrs":"149","eng":"45/IV","p":["Den Hellige Mikaels dag","Luk 22,31-32","Matt 18,1-10"]},{"n":140,"saa":"262","sw":"-","rrs":"(Bø)","eng":"85/NP","p":["Allehelgensdag","Matt 13,2-3","Matt 5,1-12"]},{"n":141,"saa":"263","sw":"69","rrs":"46","eng":"46/V","p":["Allehelgensdag","Luk 11,27-28","Matt 5,1-12"]}],"rrs":{"82":["II","1. søndag i advent","Sak.11:4-7","Matt.21:1-16"],"176":["III","1. søndag i advent","Matt.21:5","Matt.21:1-9"],"1":["I","2. søndag i advent","Luk.21:25","Luk.21:25-36"],"2":["I","2. søndag i advent","Luk.21:28","Luk.21:25-28"],"3":["I","3. søndag i advent","Es.42:6-7","Matt.11:2-6"],"83":["II","3. søndag i advent","1.Mos.3:15","Mark.6:17-28"],"84":["II","3. søndag i advent","Es.42:6-7","Matt.11:2-6"],"4":["I","4. søndag i advent","Apg.13:24-25","Joh.1:19-28"],"85":["II","4. søndag i advent","Matt.3:13-14","Joh.1:19-28"],"5":["I","Juledag","Es.53:1-2","Luk.2:1-20"],"6":["I","Juledag","Es.53:2-3","Luk.2:1-20"],"86":["II","Juledag","","Joh.1:1-14"],"177":["III","Juledag","","Joh.1:1-14"],"7":["I","2. juledag","5.Mos.32:10-12","Matt.23:37"],"178":["III","2. juledag","Matt.5:11-12","Matt.23:34-39"],"8":["I","Søndag etter jul","2.Tess.2:11-12","Luk.2:34"],"179":["III","Nyttårsdag","Apg.4:12","Luk.2:21"],"9":["I","Kristi åpenbaringsdag","4.Mos.24:17","Matt.2:1-12"],"87":["II","Kristi åpenbaringsdag","A.p.2:26-28","Matt.2:1-12"],"180":["III","Kristi åpenbaringsdag","2.Kong.5:10-12","Matt.3:13-17"],"181":["III","Kristi åpenbaringsdag","","Matt.3:13-17"],"88":["II","1. søndag.e.Kr.åpenb.dag","Tob.4:6","Luk.2:42-52"],"89":["II","2. søndag.e.Kr.åpenb.dag","Joh.2:1-2","Joh.2:1-11"],"182":["III","2. søndag.e.Kr.åpenb.dag","Es.25:6","Joh.2:1-11"],"10":["I","3. søndag.e.Kr.åpenb.dag","Es.55:5","Matt.8:5-13"],"90":["II","3. søndag.e.Kr.åpenb.dag","Matt.8:10","Matt.8:5-13"],"91":["II","3. søndag.e.Kr.åpenb.dag","1.Joh.3:18-21","Joh.4:48"],"11":["I","4. søndag.e.Kr.åpenb.dag","Sal.42:8","Matt.8:23-27"],"92":["II","4. søndag.e.Kr.åpenb.dag","","Matt.8:23-27"],"183":["III","4. søndag.e.Kr.åpenb.dag","Job 38:11","Matt.8:23-27"],"184":["III","4. søndag.e.Kr.åpenb.dag","","Matt.8:23-27"],"185":["III","5. søndag.e.Kr.åpenb.dag","Luk.10:2","Matt.13:24-30"],"186":["III","5. søndag.e.Kr.åpenb.dag","1.Pet.1:23","Matt.13:24-30"],"93":["II","Vingårdssøndagen","Luk.13:6-9","Matt.20:1-16"],"187":["III","Vingårdssøndagen","Es.5:4","Matt.20:1-16"],"188":["III","Vingårdssøndagen","3.Mos.24:1-2","Matt.25:1-13"],"94":["II","Såmannssøndagen","Es.53:1","Luk.8:4-15"],"32":["I","Kristi forklarelsesdag","Matt.19:27-28","Matt.17:1-8"],"120":["II","Kristi forklarelsesdag","2.Mos.34:29","Mark.9:2-9"],"12":["I","Søndag for faste, (Fastelavenssøndag)","1.Kor.2:14","Luk.18:31-43"],"13":["I","1. søndag i faste","1.Pet.5:8","Matt.4:1-11"],"95":["II","2. søndag i faste","Apg.20:25-27","Matt.15:21-28"],"189":["III","2. søndag i faste","Rom.10:4","Matt.15:21-28"],"190":["III","2. søndag i faste","Sal.13:2-3","Matt.15:21-28"],"14":["I","3. søndag i faste","Hebr.6:4-6","Luk.11:14-28"],"96":["II","3. søndag i faste","1.Sam.18:7","Luk.11:14-28"],"15":["I","4. søndag i faste (Midtfaste)","Joh.6:12","Joh.6:1-15"],"97":["II","4. søndag i faste (Midtfaste)","Gal.4:22-23,29","Joh.6:1-15"],"191":["III","4. søndag i faste (Midtfaste)","1.Sam.8:4-5","Joh.6:1-15"],"16":["I","5. søndag i faste","Joh.8:46","Joh.8:46-59"],"43":["I","Maria budskapsdag","Ap.12:1-2","Luk. 1:26-38"],"144":["II","Maria budskapsdag","Matt.16:13-16","Luk. l:26-38"],"214":["III","Maria budskapsdag","Sal.2:7","Luk.l:26-50"],"17":["I","Palmesøndag","Luk.22:15-16","1.Kor.11:23-29"],"18":["I","Palmesøndag","2.Mos.12:8","I .Kor. 11:23-29"],"98":["II","Palmesøndag","1.Kor. 11:27-29","1.Kor.11:23-29"],"192":["III","Palmesøndag","Joh.6:41","1.Kor.11:23-29"],"193":["III","Palmesøndag","Joh.6:54",""],"19":["I","Langfredag","Es.53:4-5","Luk.23:32-43"],"99":["II","Langfredag","Luk.23:31","Luk.23:32-43"],"100":["II","Langfredag","Sal.69:22","Luk.23:32-43"],"101":["II","Langfredag","1.Mos.42:38","Luk.23:32-43"],"194":["III","Langfredag","Joh.19:41-42","Joh.19:38-42"],"102":["II","Påskedag","Vis.5:1-5","Mark. 16:1-8"],"103":["II","Påskedag","l .Kor.5:6-7",""],"104":["II","Påskedag","Mark.9:33-34","Joh.16:7"],"195":["III","Påskedag","Matt.27:62-64","Mark.16:1-11"],"196":["III","Påskedag","","Mark. 16:1-11"],"197":["III","Påskedag","l .Kor.5:6-7","Uten tekst"],"105":["II","2. Påskedag","Es.42:1-3","Luk.24:13-35"],"20":["I","1. søndag e.påske","1.Tim. 1:9-10","Joh.20:19-31"],"198":["III","2. søndag e.påske","2.Sam.24:17","Joh.10:11-16"],"199":["III","2. søndag e.påske","","Joh.10:11-16"],"21":["I","3. søndag e.påske","Joh.16:21","Joh. 16:16-22"],"106":["II","4. søndag e.påske","Jer.2:19","Joh.16:5-15"],"107":["II","5. søndag e.påske","Jak.4:3","Joh.16:23-33"],"200":["III","5. søndag e.påske","Sir.34:25","Joh.16:23-33"],"22":["I","Kristi himmelfartsdag","Sal.110:1","Mark.16:14-20"],"23":["I","Kristi himmelfartsdag","1.Kor.15:19","Mark.16:14-20"],"24":["I","6. søndag e.påske","Matt.5:11-12","Joh.15:26-16:4"],"108":["II","6. søndag e.påske","l.Joh.3:11-14","Joh.15:26-16:4"],"25":["I","Pinsedag","Esek.36:26,31","Joh.14:23-31"],"201":["III","Pinsedag","Apg.2:38","Joh.14:23-31"],"202":["III","Pinsedag","","Apg.2:1-13"],"109":["II","2. pinsedag","Joh.3:17","Joh.3:16-21"],"110":["II","2. pinsedag","l .Mos.6:5-6","Joh.3:16-21"],"203":["III","2. pinsedag","","Apg.2:4"],"111":["II","1. søndag e.pinse, (Treenighetssøndag)","Joh.3:11","Joh.3:1-7"],"204":["III","1. søndag e.pinse","Joh.3:7-8","Joh.3:1-7"],"26":["I","2. søndag e.pinse","Joh.14:2","Luk.16:19-31"],"205":["III","2. søndag e.pinse","Matt.5:3","Luk.16:19-31"],"27":["I","3. søndag e.pinse","Luk.14:19","Luk.14:16-24"],"112":["II","3. søndag e.pinse","Luk.15:21-24","Luk.14:16-24"],"28":["I","4. søndag e.pinse","Esek.34:17","Luk.15:1-10"],"29":["I","4. søndag e.pinse","Esek.34:12-16","Luk.15:4-7"],"113":["II","4. søndag e.pinse","Esek.34:14-16","Luk.15:1-10"],"114":["II","4. søndag e.pinse","Esek.34:12","Luk.15:1-7"],"115":["II","4. søndag e.pinse","l.Mos.13:7-8",""],"116":["II","5. søndag.e.pinse","Joh.3:18","Luk.6:37-42"],"117":["II","5. søndag e.pinse","Luk.6:37-38","Luk.6:36-37"],"30":["I","6. søndag e.pinse","Joh.21:6","Luk.15:1-11"],"31":["I","6. søndag e.pinse","Es.3:9","Luk.15:1-11"],"118":["II","6. søndag e.pinse","Matt.13:47-48","Luk.5:1-11"],"119":["II","7. søndag e.pinse","Matt.5:20","Matt.5:20-22"],"249":["III","8. søndag e.pinse","Rom.6:6","Matt. 11:30"],"121":["II","9. søndag e.pinse","Luk.13:6-9","Matt.7:15-21"],"33":["I","10. søndag e.pinse","Matt.25:29","Luk.16:1-13"],"122":["II","10. søndag e.pinse","l.Kor.4:1-2","Luk.16:1-13"],"123":["II","11. søndag e.pinse","2.Sam.18:33","Luk.19:41-44"],"124":["II","11. søndag e.pinse","l .Mos.42:38","Luk.19:41-44"],"34":["I","12. søndag e.pinse","Sal.51:3","Luk.18:9-14"],"206":["III","12. søndag e.pinse","Jer.4:19,18","Luk.18:9-14"],"35":["I","13. søndag e.pinse","2.Mos.4:11","Mark.7:31-37"],"36":["I","14. søndag e.pinse","Am.5:10","Luk.10:25-29"],"125":["II","14. søndag e.pinse","Mark.14:7","Luk. 10:23-37"],"207":["III","14. søndag e.pinse","Ordsp.14:31","Luk.10:25-37"],"126":["II","15. søndag e.pinse","Jer.2:27","Luk.17:11-19"],"127":["II","16. søndag e.pinse","2.Kor.7:10","Matt.6:24-34"],"128":["II","16. søndag e.pinse","Joh.17:9","Matt.6:24"],"208":["III","16. søndag e.pinse","","Matt.6:24-34"],"129":["II","17. søndag e.pinse","","Luk.7:11-16"],"209":["III","17. søndag e.pinse","Rom.5:12","Luk.7:11-17"],"130":["II","18. søndag e.pinse","","Luk.14:7-11"],"131":["II","18. søndag e.pinse","Luk.14:10","Luk.14:7-11"],"132":["II","19. søndag e.pinse","Sal.110:l","Matt.22:41-46"],"210":["III","19. søndag e.pinse","Matt.22:37","Matt.22:34-40"],"133":["II","20. søndag e.pinse","Matt.16:19","Matt.9:1-8"],"134":["II","20. søndag e.pinse","Hos. 13:13-14","Matt.9:1-8"],"135":["II","21. søndag e.pinse","I .Mos.45:22","Matt.22:1-14"],"211":["III","21. søndag e.pinse","","Matt.22:1-14"],"47":["I","Bots- og bededag","I .Mos.41:9","Apg.3:19"],"158":["II","Bots- og bededag","Sal.8:4-5","Es.6:3"],"217":["III","Bots- og bededag","2.Pet.3:15","2.Pet.3:9"],"46":["I","Allehelgensdag","Luk.11:27-28","Matt.5:1-12"],"150":["II","Allehelgensdag","l.Kor.10:7","Matt.5:1-12"],"37":["I","22. søndag e.pinse","l .Joh.3:18-21","Joh.4:46-53"],"136":["II","22. søndag e.pinse","Luk.18:8","Joh.4:46-53"],"212":["III","22. søndag e.pinse","Mark.9:23","Joh.4:46-53"],"38":["I","23. søndag e.pinse","Es.18:24","Matt. 18:23-35"],"137":["II","23. søndag e.pinse","Rom.10:3","Matt.18:23-35"],"138":["II","23. søndag e.pinse","Esek.3:20","Matt.18:23-35"],"39":["I","24. søndag e.pinse","Gal.6:8",""],"139":["II","24. søndag e.pinse","Rom.13:7","Matt.22:15-22"],"140":["II","25. søndag e.pinse","(uten tekst)","Matt.9:18-19,23-26"],"141":["II","26. søndag e.pinse","Matt.24:23-24","Matt.24:15-28"],"40":["I","27. søndag e.pinse","Rom.13:8","l.Joh.4-17"],"142":["II","27. søndag e.pinse","Salmetekst","Matt.25:31-46"],"41":["I","Siste søndag i kirkeåret","Ap.20:12","Matt.25:31-36"],"143":["II","Siste søndag i kirkeåret","Ap.14:13","Matt.25:31-46"],"42":["I","Kyndelsmessedag","Job 19:25-26","Luk.2:22-32"],"213":["III","Kyndelsmessedag","Dan.9:26-27","Luk.2:22-32"],"44":["I","St. Hans dag 1857","Matt.11:11","Luk. 1:57-80"],"145":["II","St. Hans dag 1849/55","Luk.3:16-17","Luk.1:68-80"],"146":["II","St. Hans dag 1849","Es.40:3-4","Luk.1:57-80"],"147":["II","St. Hans dag 1853","Mal.3:13-14","Luk.1:57-80"],"215":["III","St. Hans dag 1856","Es.40:6-8","Luk. l:57-80"],"216":["III","St. Hans dag 1859","l.Mos.4:26","Luk. 1:57-80"],"45":["I","St. Mikkels dag","Matt.18:7","Matt.18:6-7"],"148":["II","St. Mikkels dag","A.p.12:7-9","Matt.18:1-4"],"149":["II","St. Mikkels dag","Luk.22:31-32","Matt.18:1-7"],"48":["I","1. bededag 1851","","Joh.6:51-66"],"49":["I","1. bededag 1855","5.Mos.27:26","Jak.2:10"],"50":["I","1. bededag 1859","Sir.5:6","Sal.40:12"],"218":["III","1. bededag 1855","Jak.1:21","Jak.1:22"],"219":["III","1. bededag 1860","Job5:17","Job 10:14"],"220":["III","1. bededag 1857","","A.p.2:5"],"221":["III","1. bededag 1857","Jer.7:3",""],"51":["I","2. bededag 1855","Mik.7:18","Mik.7:19"],"52":["I","2. bededag 1849","Rom.8:16","l.Joh.5:11"],"151":["II","2. bededag","Esek.33:11","Luk.23:26"],"152":["II","2. bededag 1856","Salmetekst","Luk.11:9"],"153":["II","2. bededag","Sal.10:17",""],"222":["III","2. bededag 1854","Jak.2:14","Matt.7:15-21"],"223":["III","2. bededag 1856","2.Kor.6:14","1.Tim.1:15"],"224":["III","2. bededag 1858","Sal.5:3",""],"225":["III","2. bededag 1859","Sal.45:8","Sal.l 19:35"],"226":["III","2. bededag 1845","Joh.1:29","I .Joh.1:7"],"227":["III","2. bededag 1853","Sal.32:1",""],"53":["I","3. bededag  1853","Kol.1:21","Kol.2:6-7"],"54":["I","3. bededag 1854","","l.Tess.4:3"],"55":["I","3. bededag 1855","Matt.11:23-24","Gal.2:17"],"56":["I","3. bededag 1855","Rom.8:17","Ef.1:5"],"57":["I","3. bededag 1857","Sal.103:17-18",""],"154":["II","3. bededag 1851","Esek.16:6","Luk.1:68"],"155":["II","3. bededag 1854","1.Pet.4:18","l.Kor.13:13"],"156":["II","3. bededag 1859","","Joh.8:12"],"157":["II","3. bededag 1853","","2.Pet.3:18"],"228":["III","3. bededag 1856","Rom.6:4","Gal.3:27"],"229":["III","3. bededag 1851","","Sal.97:11"],"230":["III","3. bededag 1856","2.Tim.2:19",""],"231":["III","3. bededag 1858","Gal.4:22,29","Ef.2:14-15"],"232":["III","3. bededag 1860","Jak.2:20","Ef.2:8"],"233":["III","3. bededag  1860","Es.11:10",""],"58":["I","4. bededag 1853","Matt.2:16","Luk.1:68"],"59":["I","4. bededag 1856","","Sal.145:1"],"60":["I","4. bededag 1854","Sal.111:2",""],"61":["I","4. bededag 1859","Ordsp.14:9","Sal.51:17"],"159":["II","4. bededag","Uten tekst","A.p.19:1"],"160":["II","4. bededag 1854","Vis.2:23","A.p.4:11"],"161":["II","4. bededag 1859","Sal.34:16-18",""],"234":["III","4. bededag 1850","Sal.103:2-3","Sal.103:21-22"],"235":["III","4. bededag 1855","Ap.7:2-4","Ap.5:12"],"162":["II","Bededag","2.Mos.32:7-8","Es.48:18"],"236":["III","Bededag 1850","Sal.57:2",""],"62":["I","Overhøringspreken 1852","l.Tess.4:10-12",""],"63":["I","Overhøringspreken 1854","Es.48:10-11",""],"64":["I","Overhøringspreken 1857","Mik.7:2",""],"65":["I","Overhøringspreken","Esek.33:30-32",""],"66":["I","Overhøringspreken","Am.6:1",""],"163":["II","Overhøringspreken","Es.4:4",""],"164":["II","Overhøringspreken","Apg.5:29",""],"165":["II","Overhøringspreken 1852","Es.27:1-4",""],"166":["II","Overhøringspreken 1854","Joh.16:8",""],"167":["II","Overhøringspreken","Jer.5:12-13",""],"237":["III","Overhøringspreken","5.Mos.30:6","Matt.25:1-13"],"238":["III","Overhøringspreken 1849","Luk.14:28-30","l.Kor.3:10-13"],"239":["III","Overhøringspreken 1854","1.Joh.3:19-21","Rom.7:22-23"],"240":["III","Overhøringspreken 1856","Hos.8:12",""],"241":["III","Overhøringspreken","Ef.3:14-17",""],"242":["III","Overhøringspreken","Hebr.12:1-8",""],"243":["III","Overhøringspreken 1846","Vis.2:1,5",""],"244":["III","Overhøringspreken 1849","2.Pet. l:19",""],"245":["III","Overhøringspreken 1858","Am.5:10",""],"67":["I","Preken ved rettergang","Jak.2:8-9",""],"168":["II","Preken ved rettergang","Jak.3:14-16",""],"170":["II","Tale til konfirmantene","5.Mos.32:46-47",""],"68":["I","Skriftemålspreken 1846","Joh.4:41-42",""],"69":["I","Skriftemålspreken 1851","Matt.26:20",""],"70":["I","Skriftemålspreken 1852","Joh.16:20",""],"71":["I","Skriftemålspreken","2.Mos.12:11",""],"72":["I","Skriftemålspreken","Sir.18:23-24",""],"73":["I","Skriftemålspreken","Mark.10:20",""],"74":["I","Skriftemålspreken","Matt.25:1-3",""],"75":["I","Skriftemålspreken","Matt.19:16",""],"76":["I","Skriftemålspreken","Luk.15:11-32",""],"77":["I","Skriftemålspreken","Luk.22:15-16",""],"78":["I","Skriftemålspreken","Joh.15:1-2",""],"79":["I","Skriftemålspreken","2.Kor.5:1-3",""],"169":["II","Skriftemålspreken 1849","Matt.26:36-41",""],"171":["II","Skriftemålspreken 1855","Uten tekst",""],"172":["II","Skriftemålspreken","2.Mos.12:45",""],"173":["II","Skriftemålspreken","Esek.14:1-4",""],"174":["II","Skriftemålspreken","Sir.41:1",""],"246":["III","Skriftemålspreken","Rom.10:10",""],"247":["III","Skriftemålspreken","Ap.12:1-5",""],"80":["I","Preken","2.Mos.16:3","Sal.105:3"],"81":["I","Preken","Ap.2:5",""],"175":["II","Visitaspreken i Arvidsj.","Es.57:15",""],"248":["III","Visitaspreken","2.Kor.7:9",""]}};
+
+const ENG = {NP:"New Postilla", III:"Third Postilla", IV:"Fourth Postilla", V:"Fifth Postilla"};
+const NAMES = {
+  saa:["Saa","Saarnat og Samlade Predikningar"],
+  sw:["SW","Postilla, S. Wettainen"],
+  rrs:["RRS","Prekensamling I–III, R. Rustholkarhu-Sund"],
+  eng:["Eng","New / Third / Fourth / Fifth Postilla"]
+};
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+// Bibelreferanser skrives ulikt ("Matt 21,5" / "Matt.21:5"); sammenlign som ord.
+const norm = s => String(s||"").toLowerCase().replace(/[.,:;()\-–]/g," ").replace(/\s+/g," ").trim();
+const isEmpty = v => !v || v === "-";
+
+function describe(key, v){
+  if (isEmpty(v)) return null;
+  if (key === "saa"){
+    if (v.endsWith("*")) return {ref:v, det:"Fra Postille A.K. Panula, nr. " + v.replace(/\D/g,"")};
+    return {ref:v};
+  }
+  if (key === "rrs"){
+    if (v.startsWith("(")){
+      const parts = [];
+      if (v.includes("Br")) parts.push("Brune, Kirkepostille");
+      if (v.includes("Bø")) parts.push("Børresen, Tredje Postille");
+      return {ref:v, det:"Ikke i RRS – finnes i " + parts.join(" og ")};
+    }
+    const n = v.replace(/\/.*/,""), r = DATA.rrs[n];
+    const det = r ? `Bind ${r[0]} · ${r[1]}` + (r[2] ? ` · ${r[2]}` : "") + (r[3] ? ` · ${r[3]}` : "") : "";
+    return {ref:v.replace("/-",""), det: det + (v.includes("/-") ? (det ? " · " : "") + "merket «/-» i tabellen" : "")};
+  }
+  if (key === "eng"){
+    const [n, s] = v.split("/");
+    return {ref:v, det:`${ENG[s] || s}, preken ${n}`};
+  }
+  return {ref:v};
+}
+
+function haystacks(x){
+  const p = x.p || [];
+  const rrsKey = x.rrs.replace(/\/.*/,"");
+  const r = DATA.rrs[rrsKey] || [];
+  let extra = "";
+  if (x.rrs.includes("Br")) extra += " brune kirkepostille";
+  if (x.rrs.includes("Bø")) extra += " børresen tredje postille";
+  if (x.saa.includes("*")) extra += " panula";
+  return {
+    txt: norm([p[0],p[1],p[2],r[1],r[2],r[3]].join(" ")) ,
+    extra: norm(extra + " " + x.eng.split("/").map(s => ENG[s]||"").join(" "))
+  };
+}
+
+function match(x, q, f){
+  const qn = norm(q), ql = q.trim().toLowerCase();
+  const num = /^\d+[a-c]?$/i.test(ql);
+  const eq = (v) => !isEmpty(v) && (v.toLowerCase() === ql || v.toLowerCase().replace(/\*|\/-/g,"") === ql);
+  const hits = [];
+  if ((f==="all"||f==="pi") && String(x.n) === ql) hits.push("pi");
+  if (f==="all"||f==="saa") if (eq(x.saa)) hits.push("saa");
+  if (f==="all"||f==="sw")  if (eq(x.sw))  hits.push("sw");
+  if (f==="all"||f==="rrs") if (eq(x.rrs)) hits.push("rrs");
+  if (f==="all"||f==="eng") if (!isEmpty(x.eng) && (x.eng.toLowerCase()===ql || (num && x.eng.split("/")[0]===ql))) hits.push("eng");
+  if (!num && (f==="all"||f==="txt")){
+    const h = haystacks(x);
+    if (qn && h.txt.includes(qn)) hits.push("txt");
+    else if (f==="all" && qn && h.extra.includes(qn)) hits.push("txt");
+  }
+  return hits;
+}
+
+function hl(text, q){
+  if (!q || /^\d+$/.test(q.trim())) return esc(text);
+  const words = norm(q).split(" ").filter(Boolean).map(w => w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"));
+  if (!words.length) return esc(text);
+  const re = new RegExp("(" + words.join("[\\s.,:;\\-]*") + ")", "ig");
+  return esc(text).replace(re, "<mark>$1</mark>");
+}
+
+function card(x, hits, q){
+  const p = x.p;
+  const sun = p ? hl(p[0], q) : '<span class="none">Søndag ikke registrert</span>';
+  const texts = p ? [p[1] && p[1] !== "Ingen spesifikk referanse" ? "Innledning: " + hl(p[1], q) : "", p[2] ? "Evangelietekst: " + hl(p[2], q) : ""].filter(Boolean).join(" · ") : "";
+  const rows = Object.keys(NAMES).map(k => {
+    const d = describe(k, x[k]);
+    const on = hits.includes(k);
+    const cell = d
+      ? `<td class="ref">${on ? "<mark>"+esc(d.ref)+"</mark>" : esc(d.ref)}${d.det ? `<span class="det">${hl(d.det, hits.includes("txt") ? q : "")}</span>` : ""}</td>`
+      : `<td class="none">Finnes ikke</td>`;
+    return `<tr><th>${esc(NAMES[k][1])} <span class="abbr">${NAMES[k][0]}</span></th>${cell}</tr>`;
+  }).join("");
+  const n = hits.includes("pi") ? `<mark>${x.n}</mark>` : x.n;
+  return `<div class="card"><div class="head"><div class="num" title="Postille I nr.">PI ${n}</div><div><div class="sun">${sun}</div>${texts ? `<div class="texts">${texts}</div>` : ""}</div></div><table>${rows}</table></div>`;
+}
+
+const $q = document.getElementById("q"), $f = document.getElementById("f"),
+      $out = document.getElementById("out"), $count = document.getElementById("count");
+
+function run(){
+  const q = $q.value, f = $f.value;
+  if (!q.trim()){
+    $count.textContent = `${DATA.x.length} prekener i Postille I. Skriv i søkefeltet for å finne en preken.`;
+    $out.innerHTML = "";
+    return;
+  }
+  const res = [];
+  for (const x of DATA.x){ const h = match(x, q, f); if (h.length) res.push([x, h]); }
+  // Treff på Postille I-nummer først
+  res.sort((a,b) => (b[1].includes("pi") - a[1].includes("pi")) || a[0].n - b[0].n);
+  $count.textContent = res.length ? `${res.length} treff` : "";
+  $out.innerHTML = res.length ? res.slice(0, 150).map(([x,h]) => card(x,h,q)).join("")
+    : `<div class="empty">Ingen treff for «${esc(q)}». Prøv et nummer, en søndag (f.eks. «advent») eller en bibeltekst (f.eks. «Luk 15»).</div>`;
+  try { history.replaceState(null, "", q.trim() ? "#" + encodeURIComponent(q.trim()) : location.pathname); } catch(e){}
+}
+
+$q.addEventListener("input", run);
+$f.addEventListener("change", run);
+document.querySelectorAll(".hint button").forEach(b => b.addEventListener("click", () => { $q.value = b.dataset.q; $f.value = "all"; run(); $q.focus(); }));
+if (location.hash) $q.value = decodeURIComponent(location.hash.slice(1));
+run();
+</script>
+</body>
+</html>
