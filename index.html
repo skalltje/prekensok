@@ -34,6 +34,7 @@ h1{font-size:30px;margin:0 0 8px;font-weight:400;color:var(--accent)}
 .hint{color:var(--muted);font-size:14px;margin:12px 0 0}
 .hint button{font:inherit;background:none;border:0;color:var(--accent);cursor:pointer;padding:0}
 .hint button:hover{text-decoration:underline}
+.note{margin:16px 0 0;padding:10px 14px;border-left:3px solid var(--accent);color:#fff;font-size:15px;background:rgba(203,167,92,.08)}
 .count{color:#fff;font-size:16px;margin:0 0 12px}
 .card{background:var(--panel);padding:28px 40px;margin-bottom:16px}
 .texts{font-size:26px;color:var(--accent);line-height:1.25}
@@ -85,6 +86,7 @@ a:hover{text-decoration:underline}
     <button data-q="PI 12">PI 12</button> ·
     <button data-q="AK 19">AK 19</button>
   </p>
+  <p class="note">Vær oppmerksom på at det kan være feil i kildene. Registrene kan ha trykkfeil, og noen av dem er lest maskinelt fra skannede sider. Kontroller derfor mot originalen.</p>
   </div>
 
   <div id="count" class="count"></div>
@@ -275,7 +277,7 @@ let LIMIT = 40;
 function run(){
   const q = $q.value, f = $f.value;
   if (!q.trim()){
-    $count.textContent = `${DATA.e.length} prekener i ${COLS.length - 1} samlinger. Skriv i søkefeltet for å finne en preken.`;
+    $count.textContent = "Skriv i søkefeltet for å finne en preken.";
     $out.innerHTML = ""; return;
   }
   const {res, words} = search(q, f);
