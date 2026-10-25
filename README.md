@@ -9,6 +9,7 @@ Du kan søke på
 - søndag eller anledning: `påskedag`, `advent`
 - stikkord fra Peltomaas register (svensk): `Absalom`
 - samling og nummer: `RRS 83`, `Br 26B`, `Bø 22`, `PI 12`, `SW 17B`, `NP 3`, `Saarnat 14`, `AK 19`
+- bare et nummer: `83` (finner nummeret i alle samlingene)
 
 ## Samlinger
 | Forkortelse | Samling |

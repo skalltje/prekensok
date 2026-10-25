@@ -29,6 +29,7 @@ h1{font-size:30px;margin:0 0 8px;font-weight:400;color:var(--accent)}
 .search input:focus,.search select:focus{outline:2px solid var(--accent);outline-offset:0}
 .search select{font:inherit;font-size:16px;padding:10px;border:1px solid #4b5665;border-radius:var(--radius);background:var(--bg);color:var(--ink);max-width:100%}
 .hint{color:var(--muted);font-size:14px;margin:12px 0 0}
+.hint + .hint{margin-top:6px}
 .hint button{font:inherit;background:none;border:0;color:var(--accent);cursor:pointer;padding:0}
 .hint button:hover{text-decoration:underline}
 .note{margin:16px 0 0;padding:10px 14px;border-left:3px solid var(--accent);color:var(--ink);font-size:15px;background:rgba(156,196,178,.08);border-radius:0 var(--radius) var(--radius) 0}
@@ -69,7 +70,7 @@ a:hover{text-decoration:underline}
   <p class="sub">Finn en preken av L.L. Læstadius og se hvor den står i de ulike prekensamlingene: norske, svenske, finske, samiske, tyske og amerikanske.</p>
 
   <div class="search">
-    <input id="q" type="search" autocomplete="off" placeholder="Søk: bibeltekst, søndag, stikkord eller f.eks. «RRS 83» …" autofocus>
+    <input id="q" type="search" autocomplete="off" placeholder="Søk: bibeltekst, søndag, stikkord, nummer eller f.eks. «RRS 83» …" autofocus>
     <select id="f" aria-label="Søk i samling"></select>
   </div>
   <p class="hint">Eksempler:
@@ -82,6 +83,7 @@ a:hover{text-decoration:underline}
     <button data-q="PI 12">PI 12</button> ·
     <button data-q="AK 19">AK 19</button>
   </p>
+  <p class="hint">Du kan også skrive bare et nummer, f.eks. <button data-q="83">83</button>, for å finne det nummeret i alle samlingene. Velg en samling i listen for å søke bare i den.</p>
   <p class="note">Vær oppmerksom på at det kan være feil i kildene. Registrene kan ha trykkfeil, og noen av dem er lest maskinelt fra skannede sider.</p>
   </div>
 
@@ -280,7 +282,7 @@ function run(){
   $count.textContent = res.length ? `${res.length} treff` : "";
   $out.innerHTML = res.length
     ? res.slice(0, LIMIT).map(r => card(r, words)).join("") + (res.length > LIMIT ? `<button class="more" id="more">Vis flere (${res.length - LIMIT})</button>` : "")
-    : `<div class="empty">Ingen treff for «${esc(q)}». Prøv en bibeltekst (f.eks. «Luk 15»), en søndag («advent»), et stikkord eller samling + nummer («RRS 83», «Br 3A»).</div>`;
+    : `<div class="empty">Ingen treff for «${esc(q)}». Prøv en bibeltekst (f.eks. «Luk 15»), en søndag («advent»), et stikkord, samling + nummer («RRS 83», «Br 3A») eller bare et nummer («83»).</div>`;
   const more = document.getElementById("more");
   if (more) more.onclick = () => { LIMIT += 40; run(); };
   try { history.replaceState(null, "", q.trim() ? "#" + encodeURIComponent(q.trim()) : location.pathname); } catch(e){}
