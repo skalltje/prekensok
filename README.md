@@ -8,7 +8,7 @@ Du kan søke på
 - bibeltekst: `Matt 11,2`, `Sal 42,8` (svenske og norske bokforkortelser virker begge)
 - søndag eller anledning: `påskedag`, `advent`
 - stikkord fra Peltomaas register (svensk): `Absalom`
-- samling og nummer: `RRS 83`, `Br 26B`, `Bø 22`, `PI 12`, `SW 17B`, `NP 3`, `Saarnat 14`
+- samling og nummer: `RRS 83`, `Br 26B`, `Bø 22`, `PI 12`, `SW 17B`, `NP 3`, `Saarnat 14`, `AK 19`
 
 ## Samlinger
 | Forkortelse | Samling |
@@ -24,7 +24,9 @@ Du kan søke på
 | Pieni | Pieni Saarnakokoelma |
 | SW / FR | Postilla og Fadersrösten, S. Wettainen |
 | JH / PB / JP | Hellman, Boreman, Pietiläinen |
-| PW / D | Poasttal (P. Wigelius) og Predikten (J. Heinonen) |
+| PW | Poasttal, P. Wigelius (nordsamisk) |
+| AK | Sárne, A. Kintel (lulesamisk, 1993, 3 prekener; sidetall etter Peltomaa) |
+| D | Predikten, J. Heinonen (tysk) |
 | HP / NP / III / IV / V | House, New, Third, Fourth og Fifth Postilla |
 
 ## Kilder og data (`data/`)
