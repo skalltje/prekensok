@@ -4,61 +4,57 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Læstadiansk prekensøk</title>
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="theme-color" content="#242424">
+<meta name="theme-color" content="#1c222b">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-/* Samme uttrykk som læstadianerne.no: mørke flater, hvit tekst, gull som aksent */
+/* Mørkt blågrått tema med salviegrønn aksent */
 :root{
-  --bg:#3d3d3d; --panel:#242424; --ink:#ffffff; --muted:rgba(255,255,255,.68); --line:#474747;
-  --accent:#cba75c; --hit:#cba75c; --hit-ink:#242424; --none:rgba(255,255,255,.45);
+  --bg:#2a313b; --panel:#1c222b; --ink:#f2f4f7; --muted:rgba(242,244,247,.68); --line:#3a4452;
+  --accent:#9cc4b2; --hit:#9cc4b2; --hit-ink:#1c222b; --none:rgba(242,244,247,.45); --radius:6px;
   color-scheme: dark;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.55 "Source Sans Pro","Source Sans 3",-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
-.top{background:var(--panel);display:flex;align-items:center;gap:8px}
-.top img{width:80px;height:96px;object-fit:contain;margin:32px 0 32px 32px}
-.top .name{font-size:48px;line-height:1;padding:40px 40px 40px 24px;color:#fff;margin:0;font-weight:400}
+.top{background:var(--panel);border-bottom:3px solid var(--accent)}
+.top .name{max-width:960px;margin:0 auto;font-size:40px;line-height:1.1;padding:32px 16px;color:var(--ink);font-weight:600;letter-spacing:.01em}
 .wrap{max-width:960px;margin:0 auto;padding:40px 16px 64px}
-.intro{background:var(--panel);padding:32px 40px;margin-bottom:24px}
+.intro{background:var(--panel);padding:32px 40px;margin-bottom:24px;border-radius:var(--radius)}
 h1{font-size:30px;margin:0 0 8px;font-weight:400;color:var(--accent)}
-.sub{color:#fff;margin:0 0 20px;font-size:18px}
+.sub{color:var(--ink);margin:0 0 20px;font-size:18px}
 .search{display:flex;gap:8px;flex-wrap:wrap}
-.search input{flex:1 1 260px;min-width:0;font:inherit;font-size:20px;padding:12px 14px;border:1px solid #5a5a5a;border-radius:0;background:var(--bg);color:var(--ink)}
+.search input{flex:1 1 260px;min-width:0;font:inherit;font-size:20px;padding:12px 14px;border:1px solid #4b5665;border-radius:var(--radius);background:var(--bg);color:var(--ink)}
 .search input::placeholder{color:var(--none)}
 .search input:focus,.search select:focus{outline:2px solid var(--accent);outline-offset:0}
-.search select{font:inherit;font-size:16px;padding:10px;border:1px solid #5a5a5a;border-radius:0;background:var(--bg);color:var(--ink);max-width:100%}
+.search select{font:inherit;font-size:16px;padding:10px;border:1px solid #4b5665;border-radius:var(--radius);background:var(--bg);color:var(--ink);max-width:100%}
 .hint{color:var(--muted);font-size:14px;margin:12px 0 0}
 .hint button{font:inherit;background:none;border:0;color:var(--accent);cursor:pointer;padding:0}
 .hint button:hover{text-decoration:underline}
-.note{margin:16px 0 0;padding:10px 14px;border-left:3px solid var(--accent);color:#fff;font-size:15px;background:rgba(203,167,92,.08)}
-.count{color:#fff;font-size:16px;margin:0 0 12px}
-.card{background:var(--panel);padding:28px 40px;margin-bottom:16px}
+.note{margin:16px 0 0;padding:10px 14px;border-left:3px solid var(--accent);color:var(--ink);font-size:15px;background:rgba(156,196,178,.08);border-radius:0 var(--radius) var(--radius) 0}
+.count{color:var(--ink);font-size:16px;margin:0 0 12px}
+.card{background:var(--panel);padding:28px 40px;margin-bottom:16px;border-radius:var(--radius)}
 .texts{font-size:26px;color:var(--accent);line-height:1.25}
-.days{color:#fff;font-size:17px;margin-top:6px}
+.days{color:var(--ink);font-size:17px;margin-top:6px}
 .kw{color:var(--muted);font-style:italic;font-size:16px;margin-top:4px}
 table{width:100%;border-collapse:collapse;margin-top:16px;font-size:16px}
 th,td{text-align:left;padding:8px 8px 8px 0;border-top:1px solid var(--line);vertical-align:top}
 th{font-weight:400;color:var(--muted);width:46%}
-td.ref{font-variant-numeric:tabular-nums;color:#fff;font-weight:600}
+td.ref{font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600}
 .det{display:block;color:var(--muted);font-size:14px;font-weight:400}
 mark{background:var(--hit);color:var(--hit-ink);padding:0 3px}
 .abbr{font-size:13px;color:var(--accent);white-space:nowrap}
 .lang{font-size:13px;color:var(--none)}
-details.about{margin-top:40px;background:var(--panel);padding:24px 40px}
+details.about{margin-top:40px;background:var(--panel);padding:24px 40px;border-radius:var(--radius)}
 details.about summary{cursor:pointer;color:var(--accent);font-size:20px}
 details.about table th{width:auto}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
 .empty{color:var(--muted);padding:20px 0}
-.more{display:block;margin:16px auto;font:inherit;padding:10px 20px;border:1px solid var(--accent);border-radius:0;background:transparent;color:var(--accent);cursor:pointer}
+.more{display:block;margin:16px auto;font:inherit;padding:10px 20px;border:1px solid var(--accent);border-radius:var(--radius);background:transparent;color:var(--accent);cursor:pointer}
 .more:hover{background:var(--accent);color:var(--hit-ink)}
 @media (max-width:640px){
-  .top img{width:56px;height:68px;margin:20px 0 20px 16px}
-  .top .name{font-size:30px;padding:24px 16px}
+  .top .name{font-size:28px;padding:20px 16px}
   .intro,.card,details.about{padding:20px 16px}
   .texts{font-size:22px}
   th{width:50%}
@@ -66,7 +62,7 @@ a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
-<div class="top"><img src="logo.png" alt=""><p class="name">Læstadiansk prekensøk</p></div>
+<div class="top"><p class="name">Læstadiansk prekensøk</p></div>
 <div class="wrap">
   <div class="intro">
   <h1>Finn en preken</h1>

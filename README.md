@@ -38,5 +38,3 @@ Du kan søke på
 Saa-kolonnen i Postille I-tabellen («Saarnat og Samlade Predikningar») vises som to separate referanser med samme nummer. Nummeret stemmer med Saarnat-nummeret hos Peltomaa for 133 av 137 prekener.
 
 Se også [Læstadianske prekensamlinger på Wikipedia](https://no.wikipedia.org/wiki/L%C3%A6stadianske_prekensamlinger).
-
-Utseendet (skrift, farger og rose-ikonet) følger [læstadianerne.no](https://læstadianerne.no/).
