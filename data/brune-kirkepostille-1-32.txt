@@ -1,0 +1,43 @@
+1|Første søndag i advent|1853|Rom 13,11-12
+2 A|Annen søndag i advent||Luk 21,25
+2 B|Annen søndag i advent||
+3 A|Tredje søndag i advent||
+3 B|Tredje søndag i advent|1856|Matt 9,12
+3 C|Tredje søndag i advent|Aftensangsprediken 1854|Jes 42,6-7
+4|Fjerde søndag i advent||Rom 6,4
+5|Første juledag|1847|
+6 A|Annen juledag|1849|1 Mos 3,14-15
+6 B|Annen juledag||5 Mos 32,10-12
+6 C|Annen juledag|Aftensangsprediken 1854|Matt 5,11-12
+7|Søndag mellom jul og nyttår|Aftensangsprediken 1855|1 Mos 4,1
+8|Nyttårsdagen|1853|Fil 2,9-11
+9|Søndag etter nyttår|1859|Matt 3,12
+10|Helligtrekongersdag|Aftensangsprediken 1852|
+11|Første søndag etter helligtrekongersdag|1851|Høys 3,1-2
+12 A|Annen søndag etter helligtrekongersdag||Jes 55,1
+12 B|Annen søndag etter helligtrekongersdag|Aftensangsprediken|Joh 2,2
+13|Tredje søndag etter helligtrekongersdag||Matt 8,9-10
+14|Fjerde søndag etter helligtrekongersdag|1849|Sal 42,8
+15|Femte søndag etter helligtrekongersdag||Luk 10,2
+16 A|Septuagesima||Jes 5,4
+16 B|Septuagesima||Luk 13,6-9
+17|Seksagesima||Jes 53,1
+19|Første søndag i faste|1855|Syr 2,1
+20 A|Annen søndag i faste|1859|Matt 15,22
+20 B|Annen søndag i faste|Avskjedsprediken til Karesuando menighet 1849|Apg 20,25
+22 A|Midfastesøndag|Morgenprediken i Kengis 1854|Joh 6,27
+22 B|Midfastesøndag|1855|Joh 6,12
+23|Marias budskapsdag|1849|2 Kor 4,3-4
+24|Femte søndag i faste||Joh 8,48
+25 A|Palmesøndag|Aftensangsprediken 1859|Luk 22,15-16
+25 B|Palmesøndag||Joh 6,41
+26 A|Langfredag|1850|Sal 22
+26 B|Langfredag||1 Mos 42,38
+27 A|Påskedag|Høymessepreken 1854|Visd 5,1
+27 B|Påskedag||1 Kor 5,6-8
+28|Annen påskedag|1850|Jes 42,1-3
+29|Første søndag etter påske||2 Kong 6,25-33
+30 A|Annen søndag etter påske||Esek 34,17
+30 B|Annen søndag etter påske|1851|2 Sam 24,17
+31|Tredje søndag etter påske||
+32|Fjerde søndag etter påske||Jer 2,19

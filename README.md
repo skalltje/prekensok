@@ -1,15 +1,38 @@
 # Læstadiansk prekensøk
 
-Søk etter en preken fra *Postille I* og se hvor den står i andre læstadianske prekensamlinger:
-Saarnat og Samlade Predikningar (Saa), Postilla ved S. Wettainen (SW), Prekensamling I–III ved R. Rustholkarhu-Sund (RRS),
-og New, Third, Fourth og Fifth Postilla (Eng).
+Et globalt søk og en kryssreferanse for prekenene til L.L. Læstadius. Finn en preken og se hvor den står i de ulike prekensamlingene: norske, svenske, finske, samiske, tyske og amerikanske.
 
 **Åpne appen:** https://skalltje.github.io/prekensok/
 
-Du kan søke på nummer i Postille I, søndag, bibeltekst eller et nummer i en av de andre samlingene.
+Du kan søke på
+- bibeltekst: `Matt 11,2`, `Sal 42,8` (svenske og norske bokforkortelser virker begge)
+- søndag eller anledning: `påskedag`, `advent`
+- stikkord fra Peltomaas register (svensk): `Absalom`
+- samling og nummer: `RRS 83`, `Br 26B`, `Bø 22`, `PI 12`, `SW 17B`, `NP 3`, `Saarnat 14`
 
-## Data
-- `kryssreferanse-data.txt`: kryssreferansetabellen fra Postille I, s. 796 (PI | Saa | SW | RRS | Eng).
-- Søndager og bibeltekster kommer fra registeret for Postille I og samleregisteret for RRS bind 1–3. De ligger innebygd i `index.html`.
+## Samlinger
+| Forkortelse | Samling |
+|---|---|
+| PI | Postille I (Biblioteca Laestadiana 2026) |
+| RRS | Prekensamling I–III, R. Rustholkarhu-Sund |
+| Br | Kirkepostille, A. Brune |
+| Bø | Tredje Postille, A. Børresen |
+| Saarnat | Saarnat I–III |
+| Samlade | Samlade predikningar I–VI |
+| Panula | Postilla I–II, A.K. Panula (sidetall) |
+| Häkli | Saarnoja, E. Häkli (sidetall) |
+| Pieni | Pieni Saarnakokoelma |
+| SW / FR | Postilla og Fadersrösten, S. Wettainen |
+| JH / PB / JP | Hellman, Boreman, Pietiläinen |
+| PW / D | Poasttal (P. Wigelius) og Predikten (J. Heinonen) |
+| HP / NP / III / IV / V | House, New, Third, Fourth og Fifth Postilla |
+
+## Kilder og data (`data/`)
+- `peltomaa-predikotextregister.tsv`: Lauri Peltomaa, *Predikotextregister* (2003), side 8–45, lest maskinelt (OCR) fra skannede sider. Det kan finnes lesefeil.
+- `postille1-kryssreferanse.txt`: «Kryssreferanser til andre postiller», Postille I s. 796 (PI | Saa | SW | RRS | Eng).
+- `brune-kirkepostille-1-32.txt`: søndag, år og tekst for Brunes *Kirkepostille* nr. 1–32 (fra OCR).
+- Søndager og tekster for RRS og Postille I kommer fra registrene deres og ligger innebygd i `index.html`.
+
+Saa-kolonnen i Postille I-tabellen («Saarnat og Samlade Predikningar») vises som to separate referanser med samme nummer. Nummeret stemmer med Saarnat-nummeret hos Peltomaa for 133 av 137 prekener.
 
 Se også [Læstadianske prekensamlinger på Wikipedia](https://no.wikipedia.org/wiki/L%C3%A6stadianske_prekensamlinger).
